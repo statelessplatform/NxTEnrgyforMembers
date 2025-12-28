@@ -451,7 +451,7 @@ input:hover {
 }
 
 .collapse-content.active {
-    max-height: 1000px;
+    max-height: 2000px;
     margin-top: var(--space-md);
 }
 
