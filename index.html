@@ -3,189 +3,333 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; img-src 'self' data:;">
-    <title>Solar Savings Calculator | VNM Comparison</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☀️</text></svg>">
+    <title>Solar Savings Calculator - NxTEnrgy</title>
+    <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><span class="emoji">☀️</span> Solar Savings Calculator</h1>
+            <h1>☀️ Solar Savings Calculator</h1>
             <p class="subtitle">Compare Grid vs. Competitor VNM vs. NxTEnrgy</p>
         </header>
 
         <div class="grid-layout">
-            <!-- LEFT SIDE: INPUTS -->
+            <!-- INPUT PANEL -->
             <div class="input-panel">
+                <!-- NAME SECTION -->
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="card-title"><span class="emoji">👤</span> Your Name</h2>
+                        <h2 class="card-title">
+                            <span class="emoji">👤</span>
+                            Your Name
+                        </h2>
                     </div>
                     <div class="input-group">
-                        <input type="text" id="consumerName" placeholder="Enter your name" aria-label="Consumer name">
+                        <input type="text" id="userName" placeholder="Enter your name">
                     </div>
                 </div>
 
+                <!-- QUICK FILL SECTION -->
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="card-title"><span class="emoji">⚡</span> Quick Fill</h2>
+                        <h2 class="card-title">
+                            <span class="emoji">⚡</span>
+                            Quick Fill
+                        </h2>
                     </div>
                     <div class="input-group">
-                        <label for="avgUnits">
-                            <span class="emoji">💡</span> Monthly Average Units (Optional)
-                        </label>
-                        <input type="number" id="avgUnits" min="0" placeholder="e.g., 750" aria-label="Average monthly units" data-autofill="true">
+                        <label for="autoFill">💡 Monthly Average Units (Optional)</label>
+                        <input type="number" id="autoFill" placeholder="e.g., 750">
                         <p class="input-hint">Enter a value to auto-fill all months below</p>
                     </div>
                 </div>
 
+                <!-- MONTHLY CONSUMPTION SECTION -->
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="card-title"><span class="emoji">📊</span> Monthly Consumption (kWh)</h2>
+                        <h2 class="card-title">
+                            <span class="emoji">📊</span>
+                            Monthly Consumption (kWh)
+                        </h2>
                     </div>
+
                     <div class="month-grid">
-                        <div class="month-input"><label for="jan">January</label><input type="number" id="jan" min="0" value="200" data-month="true"></div>
-                        <div class="month-input"><label for="feb">February</label><input type="number" id="feb" min="0" value="400" data-month="true"></div>
-                        <div class="month-input"><label for="mar">March</label><input type="number" id="mar" min="0" value="400" data-month="true"></div>
-                        <div class="month-input"><label for="apr">April</label><input type="number" id="apr" min="0" value="400" data-month="true"></div>
-                        <div class="month-input"><label for="may">May</label><input type="number" id="may" min="0" value="900" data-month="true"></div>
-                        <div class="month-input"><label for="jun">June</label><input type="number" id="jun" min="0" value="900" data-month="true"></div>
-                        <div class="month-input"><label for="jul">July</label><input type="number" id="jul" min="0" value="400" data-month="true"></div>
-                        <div class="month-input"><label for="aug">August</label><input type="number" id="aug" min="0" value="400" data-month="true"></div>
-                        <div class="month-input"><label for="sep">September</label><input type="number" id="sep" min="0" value="400" data-month="true"></div>
-                        <div class="month-input"><label for="oct">October</label><input type="number" id="oct" min="0" value="400" data-month="true"></div>
-                        <div class="month-input"><label for="nov">November</label><input type="number" id="nov" min="0" value="400" data-month="true"></div>
-                        <div class="month-input"><label for="dec">December</label><input type="number" id="dec" min="0" value="200" data-month="true"></div>
+                        <div class="month-input">
+                            <label for="jan">January</label>
+                            <input type="number" id="jan" placeholder="200">
+                        </div>
+                        <div class="month-input">
+                            <label for="feb">February</label>
+                            <input type="number" id="feb" placeholder="400">
+                        </div>
+                        <div class="month-input">
+                            <label for="mar">March</label>
+                            <input type="number" id="mar" placeholder="400">
+                        </div>
+                        <div class="month-input">
+                            <label for="apr">April</label>
+                            <input type="number" id="apr" placeholder="400">
+                        </div>
+                        <div class="month-input">
+                            <label for="may">May</label>
+                            <input type="number" id="may" placeholder="900">
+                        </div>
+                        <div class="month-input">
+                            <label for="jun">June</label>
+                            <input type="number" id="jun" placeholder="900">
+                        </div>
+                        <div class="month-input">
+                            <label for="jul">July</label>
+                            <input type="number" id="jul" placeholder="400">
+                        </div>
+                        <div class="month-input">
+                            <label for="aug">August</label>
+                            <input type="number" id="aug" placeholder="400">
+                        </div>
+                        <div class="month-input">
+                            <label for="sep">September</label>
+                            <input type="number" id="sep" placeholder="400">
+                        </div>
+                        <div class="month-input">
+                            <label for="oct">October</label>
+                            <input type="number" id="oct" placeholder="400">
+                        </div>
+                        <div class="month-input">
+                            <label for="nov">November</label>
+                            <input type="number" id="nov" placeholder="400">
+                        </div>
+                        <div class="month-input">
+                            <label for="dec">December</label>
+                            <input type="number" id="dec" placeholder="200">
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- RIGHT SIDE: OUTPUTS -->
+            <!-- OUTPUT PANEL -->
             <div class="output-panel">
                 <div class="sticky-results">
-                    
-                    <!-- NEW VENDOR RECOMMENDATION CARD -->
-                    <div class="card recommendation-card" id="recommendationCard" style="display:none;">
-                        <div class="card-header" style="border-bottom: none; padding-bottom: 0;">
-                            <h2 class="card-title" style="color: #fff;"><span class="emoji">🚀</span> Recommended: NxTEnrgy</h2>
+                    <!-- RECOMMENDATION CARD -->
+                    <div class="card recommendation-card" id="recommendationCard" style="display: none;">
+                        <div class="card-header" style="border-color: rgba(255,255,255,0.3);">
+                            <h2 class="card-title" style="color: white;">
+                                <span class="emoji">🎯</span>
+                                Recommended: NxTEnrgy
+                            </h2>
                         </div>
                         <div class="rec-content">
                             <p class="rec-intro">
-                                <strong>Best Value:</strong> NxTEnrgy is cheaper than Competitor VNM.
-                                No upfront cost, pay monthly. Keep first 100 units on MSEDCL.
+                                <strong>Best Value:</strong> NxTEnrgy is cheaper than Competitor VNM. No upfront cost, pay monthly. Keep first 100 units on MSEDCL.
                             </p>
-                            
                             <div class="rec-split">
-                                <div class="rec-box koku">
-                                    <span class="rec-label">Subscribe NxTEnrgy</span>
-                                    <span class="rec-value" id="optNewVendorUnits">0</span>
-                                    <span class="rec-unit">Units @ ₹5.5</span>
+                                <div class="rec-box">
+                                    <div class="rec-label">SUBSCRIBE NXTENRGY</div>
+                                    <div class="rec-value" id="optNewVendorUnits">0</div>
+                                    <div class="rec-unit">Units @ ₹5.4</div>
                                 </div>
                                 <div class="rec-plus">+</div>
-                                <div class="rec-box mseb">
-                                    <span class="rec-label">Keep on MSEDCL</span>
-                                    <span class="rec-value" id="optGridUnits">100</span>
-                                    <span class="rec-unit">Units</span>
+                                <div class="rec-box">
+                                    <div class="rec-label">KEEP ON MSEDCL</div>
+                                    <div class="rec-value" id="optGridUnits">100</div>
+                                    <div class="rec-unit">Units</div>
                                 </div>
                             </div>
-
                             <div class="rec-savings">
-                                <span class="emoji">✨</span> Smart Monthly Cost: <strong id="optTotalCost">₹0</strong>
-                                <div style="font-size: 12px; margin-top: 4px; opacity: 0.8;">Includes ₹200/mo maintenance</div>
+                                <strong>+ Smart Monthly Cost: <span id="optTotalCost">₹0</span></strong><br>
+                                <span style="font-size: 13px; opacity: 0.9;">Includes ₹200/mo maintenance</span>
                             </div>
                         </div>
                     </div>
 
+                    <!-- PLAN COMPARISON CARD -->
                     <div class="card results-card">
                         <div class="card-header">
-                            <h2 class="card-title"><span class="emoji">💰</span> Plan Comparison</h2>
+                            <h2 class="card-title">
+                                <span class="emoji">💰</span>
+                                Plan Comparison
+                            </h2>
                         </div>
-                        
+
                         <div class="progress-bar">
-                            <div class="progress-fill" id="progressBar"></div>
+                            <div class="progress-fill"></div>
                         </div>
 
                         <div class="results-grid">
-                            <div class="result-card">
+                            <div class="result-card yellow">
                                 <div class="result-label">Current MSEDCL</div>
                                 <div class="result-value" id="currentBill">₹0</div>
                                 <div class="result-subtext">Monthly Bill</div>
                             </div>
-                            <div class="result-card secondary">
+
+                            <div class="result-card blue">
                                 <div class="result-label">Competitor VNM</div>
                                 <div class="result-value" id="kokuCost">₹0</div>
-                                <div class="result-subtext">₹7.5/unit (Prepaid)</div>
+                                <div class="result-subtext">₹7.5/unit Prepaid</div>
                             </div>
-                            <div class="result-card highlight">
-                                <div class="result-label"><span class="emoji">🆕</span> NxTEnrgy</div>
+
+                            <div class="result-card green highlight">
+                                <div class="result-label">📍 NxTEnrgy</div>
                                 <div class="result-value" id="newVendorCost">₹0</div>
-                                <div class="result-subtext">₹5.5/unit + ₹200</div>
+                                <div class="result-subtext">₹5.4/unit + ₹200</div>
                             </div>
-                            <div class="result-card success">
-                                <div class="result-label"><span class="emoji">🎉</span> Max Savings</div>
+
+                            <div class="result-card success savings">
+                                <div class="result-label">✨ Max Savings</div>
                                 <div class="result-value" id="monthlySavings">₹0</div>
                                 <div class="result-subtext">vs MSEDCL</div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="projection-section">
-                            <h3><span class="emoji">📋</span> Key Terms</h3>
-                            <ul class="terms-list">
-                                <li><strong>Competitor VNM:</strong> High upfront prepaid cost.</li>
-                                <li><strong>NxTEnrgy:</strong> <span class="tag-success">No Upfront Cost</span>, ₹200/mo fixed.</li>
-                                <li><strong>Commitment:</strong> 1 Year (Expires every December).</li>
-                                <li><strong>Flexibility:</strong> Plan your exit annually.</li>
-                            </ul>
+                    <!-- KEY TERMS SECTION -->
+                    <div class="card key-terms-card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <span class="emoji">📋</span>
+                                Key Terms
+                            </h2>
+                        </div>
+                        <ul class="key-terms-list">
+                            <li>
+                                <strong>Competitor VNM:</strong> High upfront prepaid cost.
+                            </li>
+                            <li>
+                                <strong>NxTEnrgy:</strong> <span class="tag-success">No Upfront Cost</span>, ₹200/mo Fixed.
+                            </li>
+                            <li>
+                                <strong>Commitment:</strong> 1 Year (Expires every December).
+                            </li>
+                            <li>
+                                <strong>Flexibility:</strong> Plan your exit annually.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- BREAKDOWN SECTION -->
+                    <div class="card">
+                        <button class="collapse-btn" onclick="toggleBreakdown()">
+                            <span class="emoji">📊</span>
+                            <span>View Slab Breakdown</span>
+                            <span id="toggleIcon">▼</span>
+                        </button>
+                        <div class="collapse-content" id="breakdownContent">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Slab Range</th>
+                                        <th>Rate (₹/unit)</th>
+                                        <th>Units</th>
+                                        <th>Amount (₹)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="slabBreakdown">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 20-YEAR COST SCHEDULE SECTION -->
+                    <div class="card" id="schedule20YearSection" style="display: none;">
+                        <div class="card-header schedule-header">
+                            <h3 class="card-title" style="color: white; margin: 0;">
+                                <span class="emoji">📊</span> 20-Year Cost Schedule with 2% Discount Benefits
+                            </h3>
                         </div>
 
-                        <div class="breakdown-section">
-                            <button class="collapse-btn" data-collapse="detailsTable">
-                                <span class="emoji">📋</span> View Slab Breakdown
-                            </button>
-                            <div class="collapse-content" id="detailsTable">
+                        <div class="benefit-banner">
+                            <p style="margin: 0; font-size: 14px; line-height: 1.6;">
+                                <strong>Exclusive Benefit:</strong> Enjoy a 2% compounding discount every 4 years on your NxTEnrgy subscription. This means your rates get progressively better over time!
+                            </p>
+                        </div>
+
+                        <div class="schedule-summary-grid">
+                            <div class="summary-card">
+                                <div class="summary-label">Initial Rate</div>
+                                <div class="summary-value" style="color: #FF4D4F;" id="initialRate20Year">₹5.40/unit</div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="summary-label">Rate at Year 20</div>
+                                <div class="summary-value" style="color: #4CAF50;" id="finalRate20Year">₹4.98/unit</div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="summary-label">Total 20-Year Cost</div>
+                                <div class="summary-value" style="color: #10B981;" id="totalCost20Year">₹0</div>
+                            </div>
+                        </div>
+
+                        <button class="collapse-btn" onclick="toggleSchedule20Year()" id="scheduleToggleBtn">
+                            <span class="emoji">📈</span>
+                            <span>View Detailed Year-by-Year Schedule</span>
+                            <span id="scheduleToggleIcon">▼</span>
+                        </button>
+
+                        <div class="collapse-content" id="schedule20YearContent">
+                            <div style="overflow-x: auto;">
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th>Slab (Units)</th>
-                                            <th>Rate</th>
-                                            <th>Units</th>
-                                            <th>Amount</th>
+                                            <th>Year</th>
+                                            <th>Rate (₹/unit)</th>
+                                            <th>Monthly Cost</th>
+                                            <th>Annual Cost</th>
+                                            <th>Discount Applied</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="slabBreakdown">
+                                    <tbody id="schedule20YearBody">
+                                        <!-- Will be populated by JavaScript -->
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
 
-        <button class="btn-icon" aria-label="Open user guide" data-action="guide">❓</button>
+        <!-- HELP BUTTON -->
+        <button class="btn-icon" onclick="openHelp()" aria-label="Help">
+            <span>?</span>
+        </button>
 
-        <dialog id="guideModal">
-            <h2><span class="emoji">📖</span> NxTEnrgy Plan Available!</h2>
-            <p><strong>The New Subscription Plan:</strong></p>
+        <!-- HELP DIALOG -->
+        <dialog id="helpDialog">
+            <h2>📖 How This Calculator Works</h2>
+            <p><strong>MSEDCL (Current Provider):</strong></p>
             <ul>
-                <li><strong>Rate:</strong> Only ₹5.5 per unit (vs ₹7.5 for Competitor VNM).</li>
-                <li><strong>Fixed Fee:</strong> ₹200 per month for maintenance.</li>
-                <li><strong>No Upfront Cost:</strong> Pay as you go.</li>
-                <li><strong>Flexibility:</strong> 1-year contract, expires in December.</li>
+                <li>0-100 units: ₹6.25/unit</li>
+                <li>101-300 units: ₹13.07/unit</li>
+                <li>301-500 units: ₹17.35/unit</li>
+                <li>Above 500 units: ₹19.65/unit</li>
+                <li>Plus 16% electricity duty</li>
             </ul>
-            <p><strong>Recommendation:</strong></p>
+
+            <p><strong>Competitor VNM (Prepaid Plan):</strong></p>
             <ul>
-                <li>We still recommend keeping the first 100 units on MSEDCL (it's cheaper).</li>
-                <li>Move the rest to NxTEnrgy for maximum savings.</li>
+                <li>Flat rate: ₹7.50/unit (Year 1)</li>
+                <li>High upfront prepaid cost</li>
             </ul>
-            <button class="btn-primary modal-close" data-action="closeModal">Got it! <span class="emoji">✨</span></button>
+
+            <p><strong>NxTEnrgy (Subscription Model):</strong></p>
+            <ul>
+                <li>Rate: ₹5.40/unit</li>
+                <li>Monthly maintenance: ₹200</li>
+                <li>No upfront cost</li>
+                <li>2% compounding discount every 4 years</li>
+                <li>Best for consumption above 100 units/month</li>
+            </ul>
+
+            <p><strong>Smart Optimization:</strong><br>
+            Keep first 100 units on MSEDCL grid (cheaper at ₹6.25) and use NxTEnrgy subscription for excess units.</p>
+
+            <button class="btn-primary modal-close" onclick="closeHelp()">
+                Got it! ✓
+            </button>
         </dialog>
-
-        <div class="toast" id="toast" role="alert" aria-live="polite"></div>
     </div>
 
     <script src="app.js"></script>
