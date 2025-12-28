@@ -10,22 +10,24 @@
     ];
 
     const ELECTRICITY_DUTY = 0.16;
-    
+
     // Competitor VNM (Previously Koku) - Prepaid Plan
     const COMPETITOR_RATE_YEAR1 = 7.50;
-    
+
     // NxTEnrgy - Subscription Plan
-    const NXTENRGY_RATE = 5.50;
+    const NXTENRGY_RATE = 5.40;
     const NXTENRGY_MAINTENANCE = 200;
 
     let debounceTimer = null;
 
+    // Sanitize input to prevent XSS
     function sanitizeInput(input) {
         return String(input).replace(/[<>&'"]/g, function(c) {
-            return {'<':'&lt;', '>':'&gt;', '&':'&amp;', "'":"&apos;", '"':'&quot;'}[c];
+            return {'<':'&lt;', '>':'&gt;', '&':'&amp;', "'":"&#39;", '"':'&quot;'}[c];
         });
     }
 
+    // Calculate MSEDCL bill based on slab structure
     function calculateBill(monthlyUnits) {
         let remainingUnits = monthlyUnits;
         let totalBill = 0;
@@ -52,11 +54,46 @@
         const duty = totalBill * ELECTRICITY_DUTY;
         const finalBill = totalBill + duty;
 
-        return { finalBill: finalBill, breakdown: breakdown, duty: duty };
+        return {
+            finalBill: finalBill,
+            breakdown: breakdown,
+            duty: duty
+        };
     }
 
+    // Calculate 20-year cost schedule with 2% discount every 4 years
+    function calculate20YearSchedule(avgMonthly) {
+        const schedule = [];
+        let currentRate = NXTENRGY_RATE;
+        const baseMonthlyUnits = avgMonthly;
+        const fixedMaintenance = NXTENRGY_MAINTENANCE;
+
+        for (let year = 1; year <= 20; year++) {
+            // Apply 2% discount every 4 years (at years 5, 9, 13, 17)
+            if (year > 1 && (year - 1) % 4 === 0) {
+                currentRate = currentRate * 0.98; // 2% discount compounding
+            }
+
+            const monthlyCost = (baseMonthlyUnits * currentRate) + fixedMaintenance;
+            const annualCost = monthlyCost * 12;
+            const discountApplied = (year > 1 && (year - 1) % 4 === 0) ? '2% Discount' : '-';
+
+            schedule.push({
+                year: year,
+                rate: currentRate,
+                monthlyCost: monthlyCost,
+                annualCost: annualCost,
+                discountApplied: discountApplied
+            });
+        }
+
+        return schedule;
+    }
+
+    // Main calculation function
     function performCalculation() {
         const monthIds = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
         const monthlyValues = monthIds.map(function(id) {
             const value = parseFloat(document.getElementById(id).value) || 0;
             return Math.max(0, value);
@@ -67,6 +104,7 @@
 
         if (avgMonthly === 0) {
             document.getElementById('recommendationCard').style.display = 'none';
+            document.getElementById('schedule20YearSection').style.display = 'none';
             document.getElementById('currentBill').textContent = '₹0';
             document.getElementById('kokuCost').textContent = '₹0';
             document.getElementById('newVendorCost').textContent = '₹0';
@@ -83,7 +121,7 @@
         // Competitor Prepaid: 7.50/unit
         const competitorFullCost = avgMonthly * COMPETITOR_RATE_YEAR1;
 
-        // NxTEnrgy: 5.50/unit + 200 fixed
+        // NxTEnrgy: 5.40/unit + 200 fixed
         const nxtEnrgyFullCost = (avgMonthly * NXTENRGY_RATE) + NXTENRGY_MAINTENANCE;
 
         // 3. Optimization Strategy (Keep first 100 units on Grid)
@@ -100,11 +138,10 @@
 
         // Calculate "Smart Plan" Cost with NxTEnrgy
         const gridPortionBill = calculateBill(optGridUnits).finalBill;
-        
-        // Subscription part: Units * 5.5 + 200 Fixed
+        // Subscription part: Units * 5.4 + 200 Fixed
         const subPortionCost = (optSubUnits > 0) ? (optSubUnits * NXTENRGY_RATE) + NXTENRGY_MAINTENANCE : 0;
-        
         const smartPlanTotalCost = gridPortionBill + subPortionCost;
+
         const monthlySavings = currentBill - smartPlanTotalCost;
 
         // 4. Update UI
@@ -123,74 +160,141 @@
         document.getElementById('newVendorCost').textContent = '₹' + Math.round(nxtEnrgyFullCost).toLocaleString('en-IN');
         document.getElementById('monthlySavings').textContent = '₹' + Math.round(monthlySavings).toLocaleString('en-IN');
 
+        // 5. Populate Slab Breakdown Table
         const tbody = document.getElementById('slabBreakdown');
         tbody.innerHTML = '';
+
         billResult.breakdown.forEach(function(slab) {
             const row = tbody.insertRow();
-            row.innerHTML = '<td>' + sanitizeInput(slab.range) + '</td>' +
-                           '<td>₹' + slab.rate.toFixed(2) + '</td>' +
-                           '<td>' + Math.round(slab.units) + '</td>' +
-                           '<td>₹' + Math.round(slab.amount).toLocaleString('en-IN') + '</td>';
+            row.innerHTML = '<td>' + slab.range + '</td>' +
+                '<td>₹' + slab.rate.toFixed(2) + '</td>' +
+                '<td>' + Math.round(slab.units) + '</td>' +
+                '<td>₹' + Math.round(slab.amount).toLocaleString('en-IN') + '</td>';
         });
+
+        // Add duty row
         const dutyRow = tbody.insertRow();
         dutyRow.innerHTML = '<td colspan="3"><strong>Electricity Duty (16%)</strong></td>' +
-                           '<td><strong>₹' + Math.round(billResult.duty).toLocaleString('en-IN') + '</strong></td>';
-    }
+            '<td><strong>₹' + Math.round(billResult.duty).toLocaleString('en-IN') + '</strong></td>';
+        dutyRow.style.borderTop = '2px solid #333';
 
-    function handleAutoFill() {
-        const avgValue = parseFloat(document.getElementById('avgUnits').value) || 0;
-        if (avgValue > 0) {
-            const monthInputs = document.querySelectorAll('[data-month]');
-            monthInputs.forEach(function(input) {
-                input.value = avgValue;
-            });
-            performCalculation();
-        }
-    }
+        // 6. Calculate and display 20-year cost schedule
+        const schedule20Year = calculate20YearSchedule(avgMonthly);
+        const scheduleTableBody = document.getElementById('schedule20YearBody');
+        scheduleTableBody.innerHTML = '';
 
-    function debouncedCalculation() {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(performCalculation, 300);
-    }
+        let totalCost20Year = 0;
+        schedule20Year.forEach(function(item) {
+            totalCost20Year += item.annualCost;
+            const row = scheduleTableBody.insertRow();
+            row.innerHTML = '<td>' + item.year + '</td>' +
+                '<td>₹' + item.rate.toFixed(2) + '</td>' +
+                '<td>₹' + Math.round(item.monthlyCost).toLocaleString('en-IN') + '</td>' +
+                '<td>₹' + Math.round(item.annualCost).toLocaleString('en-IN') + '</td>' +
+                '<td>' + (item.discountApplied !== '-' ? '<span class="tag-success">' + item.discountApplied + '</span>' : '-') + '</td>';
 
-    document.addEventListener('input', function(e) {
-        if (e.target.matches('[data-month]')) {
-            debouncedCalculation();
-        } else if (e.target.matches('[data-autofill]')) {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(handleAutoFill, 500);
-        }
-    });
-
-    document.addEventListener('click', function(e) {
-        const target = e.target.closest('[data-action]');
-        if (target) {
-            const action = target.dataset.action;
-            if (action === 'guide') {
-                document.getElementById('guideModal').showModal();
-            } else if (action === 'closeModal') {
-                document.getElementById('guideModal').close();
-            }
-        }
-        const collapseTarget = e.target.closest('[data-collapse]');
-        if (collapseTarget) {
-            const collapseId = collapseTarget.dataset.collapse;
-            const content = document.getElementById(collapseId);
-            if (content) {
-                content.classList.toggle('active');
-            }
-        }
-    });
-
-    const modal = document.getElementById('guideModal');
-    if (modal) {
-        modal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.close();
+            // Highlight discount years with background color
+            if (item.discountApplied !== '-') {
+                row.style.background = '#FFF9E6';
             }
         });
+
+        // Update summary values
+        document.getElementById('initialRate20Year').textContent = '₹' + NXTENRGY_RATE.toFixed(2) + '/unit';
+        document.getElementById('finalRate20Year').textContent = '₹' + schedule20Year[19].rate.toFixed(2) + '/unit';
+        document.getElementById('totalCost20Year').textContent = '₹' + Math.round(totalCost20Year).toLocaleString('en-IN');
+
+        // Show/hide the 20-year schedule section
+        const schedule20YearSection = document.getElementById('schedule20YearSection');
+        if (avgMonthly > 0) {
+            schedule20YearSection.style.display = 'block';
+        } else {
+            schedule20YearSection.style.display = 'none';
+        }
     }
 
-    performCalculation();
-    console.log('Solar Savings Calculator initialized ☀️ - NxTEnrgy vs Competitor VNM');
+    // Auto-fill handler with debounce
+    function handleAutoFill(e) {
+        const value = e.target.value;
+
+        clearTimeout(debounceTimer);
+
+        debounceTimer = setTimeout(function() {
+            const monthIds = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+            monthIds.forEach(function(id) {
+                document.getElementById(id).value = value;
+            });
+            performCalculation();
+        }, 300);
+    }
+
+    // Initialize event listeners
+    function init() {
+        const monthIds = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+        monthIds.forEach(function(id) {
+            const input = document.getElementById(id);
+            input.addEventListener('input', performCalculation);
+        });
+
+        const autoFillInput = document.getElementById('autoFill');
+        autoFillInput.addEventListener('input', handleAutoFill);
+
+        // User name input (optional - just for display, not affecting calculations)
+        const userNameInput = document.getElementById('userName');
+        if (userNameInput) {
+            userNameInput.addEventListener('input', function() {
+                // Could be used for personalization or saving data
+                console.log('User name:', userNameInput.value);
+            });
+        }
+
+        // Initial calculation
+        performCalculation();
+    }
+
+    // Toggle breakdown visibility
+    window.toggleBreakdown = function() {
+        const content = document.getElementById('breakdownContent');
+        const icon = document.getElementById('toggleIcon');
+
+        if (content.classList.contains('active')) {
+            content.classList.remove('active');
+            icon.textContent = '▼';
+        } else {
+            content.classList.add('active');
+            icon.textContent = '▲';
+        }
+    };
+
+    // Toggle 20-year schedule visibility
+    window.toggleSchedule20Year = function() {
+        const content = document.getElementById('schedule20YearContent');
+        const icon = document.getElementById('scheduleToggleIcon');
+
+        if (content.classList.contains('active')) {
+            content.classList.remove('active');
+            icon.textContent = '▼';
+        } else {
+            content.classList.add('active');
+            icon.textContent = '▲';
+        }
+    };
+
+    // Help dialog functions
+    window.openHelp = function() {
+        document.getElementById('helpDialog').showModal();
+    };
+
+    window.closeHelp = function() {
+        document.getElementById('helpDialog').close();
+    };
+
+    // Start the app
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
 })();
