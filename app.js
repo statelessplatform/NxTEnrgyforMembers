@@ -69,20 +69,15 @@
         const fixedMaintenance = NXTENRGY_MAINTENANCE;
 
         for (let year = 1; year <= 20; year++) {
-            // Apply 2% discount every 4 years (at years 5, 9, 13, 17)
-          //  if (year > 1 && (year - 1) % 4 === 0) {
-          //      currentRate = currentRate * 0.98; // 2% discount compounding
-           // }
-
-            if (year === 5 || year === 9 || year === 13 || year === 17) {
+            // Apply 2% discount at years 4, 8, 12, 16, 20
+            if (year % 4 === 0) {
                 currentRate = currentRate * 0.98;
             }
-
-            
+        
             const monthlyCost = (baseMonthlyUnits * currentRate) + fixedMaintenance;
             const annualCost = monthlyCost * 12;
-            const discountApplied = (year > 1 && (year - 1) % 4 === 0) ? '2% Discount' : '-';
-
+            const discountApplied = (year % 4 === 0) ? '2% Discount' : '-';
+        
             schedule.push({
                 year: year,
                 rate: currentRate,
@@ -91,6 +86,7 @@
                 discountApplied: discountApplied
             });
         }
+
 
         return schedule;
     }
