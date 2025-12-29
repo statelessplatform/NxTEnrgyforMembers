@@ -521,7 +521,7 @@ tr:hover {
     font-weight: 700;
 }
 
-#schedule20YearSection table tbody tr:nth-child(4n+1) {
+#schedule20YearSection table tbody tr:nth-child(4n) {
     background: #FFF9E6;
 }
 
